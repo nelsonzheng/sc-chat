@@ -1,0 +1,53 @@
+<!DOCTYPE html>  
+<html>  
+  <head>
+    <title>SocketCluster Chat Application</title>
+    <link href='//fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="messages">
+        <ul id="messages-list"></ul>
+      </div>
+      <div class="actions">
+        <form>
+          <input id="message" autocomplete="off" placeholder="Type a message...">
+          <button>Send</button>
+        </form>
+      </div>
+    </div>
+    <script type="text/javascript" src="/socketcluster.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>  
+    <script type="text/javascript">  
+      var socket = socketCluster.connect();
+
+      socket.on('error', function (err) {
+        throw 'Socket error - ' + err;
+      });
+
+      socket.on('connect', function () {
+        console.log('Connected to server');
+      });
+
+      $('form').submit(function(){
+        if($('#message').val() != '') {
+          socket.emit('chat', $('#message').val());
+        } 
+
+        $('#message').val('')
+        return false;
+      });
+
+      var chatChannel = socket.subscribe('yell');
+
+      chatChannel.on('subscribeFail', function(err) {  
+        console.log('Failed to subscribe to Yell channel due to error: ' + err);
+      });
+
+      chatChannel.watch(function (data) {  
+        $('#messages-list').append($('<li>').text(data));
+      });
+    </script>  
+  </body>
+</html>  
