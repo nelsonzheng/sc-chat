@@ -1,4 +1,5 @@
-SocketCluster Sample App
+SocketCluster Real-Time Chat Application
 ======
 
-This is a sample SocketCluster app.
+Real-Time Chat Application made with SocketCluster
+Made for tutorial purposes
